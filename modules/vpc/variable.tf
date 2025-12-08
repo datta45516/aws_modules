@@ -1,16 +1,7 @@
-variable "vpc_cidr" {
-  type = string
-}
-
-variable "public_subnet_cidrs" {
-  type = list(string)
-}
-
-variable "private_subnet_cidrs" {
-  type = list(string)
-}
-
-variable "tags" {
-  type    = map(string)
-  default = {}
-}
+variable "region" { type = string default = "us-east-1" }
+variable "name" { type = string }
+variable "cidr_block" { type = string }
+variable "azs" { type = list(string) }
+variable "public_subnets" { type = list(string) }
+variable "private_subnets" { type = list(string) }
+variable "tags" { type = map(string) default = {} }
