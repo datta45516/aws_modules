@@ -19,12 +19,12 @@ data "archive_file" "lambda_zip" {
 
 resource "aws_iam_role" "lambda" {
   name = "${var.function_name}-role"
-  assume_role_policy = jsonencode({
+     assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal { Service = "lambda.amazonaws.com" }
+      Effect    = "Allow"
+      Principal = { Service = "lambda.amazonaws.com" }
+      Action    = "sts:AssumeRole"
     }]
   })
 }
