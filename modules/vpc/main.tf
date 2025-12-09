@@ -1,4 +1,3 @@
-
 terraform {
   required_version = ">= 1.0"
   required_providers {
@@ -7,10 +6,6 @@ terraform {
       version = "~> 5.0"
     }
   }
-}
-
-provider "aws" {
-  region = var.region
 }
 
 resource "aws_vpc" "this" {
