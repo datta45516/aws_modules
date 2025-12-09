@@ -1,10 +1,10 @@
-variable "bucket" {
-  description = "Name of the S3 bucket. Must be unique."
-  type        = string
+variable "region" {
+  type    = string
+  default = "us-east-1"
 }
 
+variable "bucket" { type = string }
 variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }
