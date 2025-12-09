@@ -36,7 +36,34 @@ module "rds" {
   security_group_ids = [module.security_group.id]
 }
 
-module "security_group" { source = "./modules/security-group"; name = "main-sg"; vpc_id = module.vpc.vpc_id; ingress_rules = [{cidr="0.0.0.0/0", from_port=443, to_port=443, protocol="tcp", description="HTTPS"}] }
+module "security_group" {
+  source = "./modules/security-group"
+
+  name        = "main-sg"
+  description = "Main security group"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_rules = [
+    {
+      cidr        = "0.0.0.0/0"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "HTTPS from anywhere"
+    },
+    {
+      cidr        = "0.0.0.0/0"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      description = "HTTP from anywhere"
+    }
+  ]
+
+  tags = {
+    Name = "main-security-group"
+  }
+}
 module "iam_role" { source = "./modules/iam-role"; role_name = "demo-role"; assume_role_policy = data.aws_iam_policy_document.assume.json; policy_json = jsonencode({Version="2012-10-17",Statement=[{Effect="Allow",Action="s3:*",Resource="*"}]}) }
 module "alb" { source = "./modules/alb"; name = var.project_name; subnet_ids = module.vpc.public_subnet_ids; security_group_ids = [module.security_group.id]; vpc_id = module.vpc.vpc_id; certificate_arn = module.acm.certificate_arn }
 module "cloudfront" { source = "./modules/cloudfront"; origin_domain = module.s3_bucket.bucket_name }
