@@ -1,4 +1,4 @@
-name: Deploy 49 AWS Modules
+name: Deploy AWS Platform
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    # ← NO working-directory because everything is in root
 
     steps:
       - name: Checkout code
@@ -19,25 +18,26 @@ jobs:
         with:
           terraform_version: 1.9.8
 
+      # THIS IS THE FIX – init comes FIRST now
+      - name: Terraform Init
+        run: terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
       - name: Terraform Format & Validate
         run: |
           terraform fmt -check
           terraform validate
 
-      - name: Terraform Init
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: terraform init
-
       - name: Terraform Plan
+        run: terraform plan -out=plan.tfout
         env:
           TF_VAR_admin_password: ${{ secrets.TF_VAR_admin_password }}
-        run: terraform plan -out=plan.tfout
 
       - name: Terraform Apply (only on push to main)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve plan.tfout
         env:
           TF_VAR_admin_password: ${{ secrets.TF_VAR_admin_password }}
-        run: terraform apply -auto-approve plan.tfout
