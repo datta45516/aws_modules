@@ -3,8 +3,8 @@ module "vpc" {
   name            = "${var.project_name}-vpc"
   cidr_block      = var.vpc_cidr
   azs             = var.azs
-  public_subnets  = [cidrsubnet(var.vpc_cidr, 8, 1), cidrsubnet(var.vpc_cidr, 8, 2)]
-  private_subnets = [cidrsubnet(var.vpc_cidr, 8, 10), cidrsubnet(var.vpc_cidr, 8, 11)]
+  public_subnets  = [cidrsubnet(var.vpc_cidr, 4, 1), cidrsubnet(var.vpc_cidr, 4, 2)]
+  private_subnets = [cidrsubnet(var.vpc_cidr, 4, 10), cidrsubnet(var.vpc_cidr, 4, 11)]
 }
 
 resource "random_string" "suffix" {
