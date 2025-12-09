@@ -8,9 +8,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./live
+    # ← NO working-directory because everything is in root
 
     steps:
       - name: Checkout code
@@ -21,6 +19,11 @@ jobs:
         with:
           terraform_version: 1.9.8
 
+      - name: Terraform Format & Validate
+        run: |
+          terraform fmt -check
+          terraform validate
+
       - name: Terraform Init
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -28,17 +31,12 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: terraform init
 
-      - name: Terraform Format & Validate
-        run: |
-          terraform fmt -check
-          terraform validate
-
       - name: Terraform Plan
         env:
           TF_VAR_admin_password: ${{ secrets.TF_VAR_admin_password }}
         run: terraform plan -out=plan.tfout
 
-      - name: Terraform Apply (only on main)
+      - name: Terraform Apply (only on push to main)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           TF_VAR_admin_password: ${{ secrets.TF_VAR_admin_password }}
