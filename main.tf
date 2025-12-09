@@ -14,8 +14,8 @@ resource "random_string" "suffix" {
 }
 
 module "s3_bucket" {
-  source      = "./modules/s3-bucket"
-  bucket_name = "${var.project_name}-main-bucket-${random_string.suffix.result}"
+  source = "./modules/s3-bucket"
+  name   = "${var.project_name}-main-bucket-${random_string.suffix.result}"
 }
 
 module "security_group" {
