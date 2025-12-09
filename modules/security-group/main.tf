@@ -6,7 +6,7 @@ terraform {
     }
   }
 }
-provider "aws" { region = var.region }
+# provider "aws" { region = var.region }
 
 resource "aws_security_group" "this" {
   name        = var.name
