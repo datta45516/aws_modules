@@ -79,7 +79,6 @@ module "iam_account" { source = "./modules/iam-account" }
 module "eks_nodegroup" { source = "./modules/eks-nodegroup"; cluster_name = module.eks.cluster_name; node_group_name = "workers"; node_role_arn = module.iam_role.role_arn; subnet_ids = module.vpc.private_subnet_ids }
 module "s3_replication" { source = "./modules/s3-replication"; source_bucket = module.s3_bucket.bucket_name; destination_bucket_arn = "arn:aws:s3:::backup-bucket"; replication_role_arn = module.iam_role.role_arn }
 module "cloudwatch_dashboard" { source = "./modules/cloudwatch-dashboard"; dashboard_name = "${var.project_name}-overview"; dashboard_json = file("dashboard.json") }
-module "atlantis" { source = "./modules/atlantis"; cluster_id = module.ecs.cluster_id; execution_role_arn = module.iam_role.role_arn; gh_user = "your-github-user"; gh_token = var.github_token; subnet_ids = module.vpc.private_subnet_ids; security_group_ids = [module.security_group.id] }
 module "iam_user" { source = "./modules/iam-user"; username = "terraform-bot" }
 module "s3_logging" { source = "./modules/s3-logging"; target_bucket = module.s3_bucket.bucket_name; log_bucket = "${var.project_name}-logs-${random_string.suffix.result}" }
 
