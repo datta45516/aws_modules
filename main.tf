@@ -340,7 +340,6 @@ module "eks_nodegroup" {
 }
 
 module "s3_replication" {
-  {
   source               = "./modules/s3-replication"
   source_bucket        = module.s3_bucket.bucket_name
   destination_bucket_arn = "arn:aws:s3:::my-backup-bucket-123"
